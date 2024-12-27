@@ -20,8 +20,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(Long id, String title, String isbn, String publisher) {
-        this.id = id;
+    public Book(String title, String isbn, String publisher) {
         this.title = title;
         this.isbn = isbn;
         this.publisher = publisher;
@@ -62,5 +61,13 @@ public class Book {
 
     public void setPublisher(String publisher) {
         this.publisher = publisher;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
