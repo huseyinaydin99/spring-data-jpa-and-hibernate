@@ -32,6 +32,7 @@
 
 	<properties>
 		<java.version>17</java.version>
+		<mysql.version>8.0.33</mysql.version>
 	</properties>
 
 	<dependencies>
@@ -51,11 +52,18 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+		<!-- Liquibase Core Dependency -->
 		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<version>8.0.33</version>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>4.22.0</version> <!-- En son sürümü kontrol edin -->
+		</dependency>
+
+		<!-- MySQL JDBC Driver -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version> <!-- En son sürümü kontrol edin -->
 		</dependency>
 
 		<dependency>
@@ -82,6 +90,29 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>4.22.0</version> <!-- En son sürümü kontrol edin -->
+				<configuration>
+					<!-- MySQL için yapılandırmalar -->
+					<driver>com.mysql.cj.jdbc.Driver</driver>
+					<url>jdbc:mysql://localhost:3306/bookdb</url> <!-- Veritabanı URL'nizi buraya yazın -->
+					<username>bookadmin</username> <!-- Veritabanı kullanıcı adınızı buraya yazın -->
+					<password>password</password> <!-- Veritabanı şifrenizi buraya yazın -->
+					<outputChangeLogFile>db.changelog-master.xml</outputChangeLogFile> <!-- Changelog dosyanızın yolu -->
+					<changeSetAuthor>HSYN</changeSetAuthor>
+					<changelogSchemaName>bookdb</changelogSchemaName>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>8.0.33</version> <!-- En son sürümü kontrol edin -->
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
