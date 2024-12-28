@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import tr.com.huseyinaydin.domain.Book;
 import tr.com.huseyinaydin.repositories.BookRepository;
 
-@Profile({"local","default"})
+@Profile({"local","default","clean"})
 @Component
 public class DataInitializer implements CommandLineRunner {
 
