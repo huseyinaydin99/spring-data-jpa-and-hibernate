@@ -1,0 +1,1 @@
+alter table books ADD author_id BIGINT;
