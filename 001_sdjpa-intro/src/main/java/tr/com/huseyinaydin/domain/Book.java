@@ -14,6 +14,8 @@ public class Book {
     private String title;
     private String isbn;
     private String publisher;
+
+    //@Transient //muaf tutar orm'den
     private Long authorId;
 
     public Book() {

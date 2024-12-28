@@ -3,6 +3,6 @@
     <include file="db/changelog/baseline-changelog.xml"/>
     <include file="db/changelog/add-hibernate_sequence.xml"/>
     <include file="db/changelog/init-hibernate.xml"/>
-    <include file="db/changelog/add-author-id-to-books.xml"/>
+    <!--<include file="db/changelog/add-author-id-to-books.xml"/>-->
     <include file="db/changelog/add-authors.xml"/>
 </databaseChangeLog>
