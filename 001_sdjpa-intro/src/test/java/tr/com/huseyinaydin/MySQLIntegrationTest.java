@@ -9,10 +9,9 @@ import org.springframework.test.context.ActiveProfiles;
 import tr.com.huseyinaydin.domain.AuthorUUID;
 import tr.com.huseyinaydin.domain.BookNatural;
 import tr.com.huseyinaydin.domain.BookUUID;
-import tr.com.huseyinaydin.repositories.AuthorUuidRepository;
-import tr.com.huseyinaydin.repositories.BookNaturalRepository;
-import tr.com.huseyinaydin.repositories.BookRepository;
-import tr.com.huseyinaydin.repositories.BookUuidRepository;
+import tr.com.huseyinaydin.domain.composite.AuthorComposite;
+import tr.com.huseyinaydin.domain.composite.NameId;
+import tr.com.huseyinaydin.repositories.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -32,6 +31,24 @@ public class MySQLIntegrationTest {
 
     @Autowired
     BookNaturalRepository bookNaturalRepository;
+
+    @Autowired
+    AuthorCompositeRepository authorCompositeRepository;
+
+    @Test
+    void authorCompositeTest() {
+        NameId nameId = new NameId("Hüseyin", "AYDIN");
+        AuthorComposite authorComposite = new AuthorComposite();
+        authorComposite.setFirstName(nameId.getFirstName());
+        authorComposite.setLastName(nameId.getLastName());
+        authorComposite.setCountry("TR");
+
+        AuthorComposite saved = authorCompositeRepository.save(authorComposite);
+        assertThat(saved).isNotNull();
+
+        AuthorComposite fetched = authorCompositeRepository.getById(nameId);
+        assertThat(fetched).isNotNull();
+    }
 
     @Test
     void bookNaturalTest() {
