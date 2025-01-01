@@ -1,14 +1,22 @@
 package tr.com.huseyinaydin.jdbc.dao;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import tr.com.huseyinaydin.jdbc.domain.Author;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuthorDaoImpl implements AuthorDao {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public AuthorDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @Override
     public Author getById(Long id) {
-        return null;
+        return jdbcTemplate.queryForObject("SELECT * FROM authors where id = ?", getRowMapper(), id);
     }
 
     @Override
