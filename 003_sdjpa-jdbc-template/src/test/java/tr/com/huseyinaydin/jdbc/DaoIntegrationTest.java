@@ -1,8 +1,10 @@
 package tr.com.huseyinaydin.jdbc;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import tr.com.huseyinaydin.jdbc.dao.AuthorDao;
 
 import tr.com.huseyinaydin.jdbc.dao.AuthorDaoImpl;
+import tr.com.huseyinaydin.jdbc.dao.BookDao;
 import tr.com.huseyinaydin.jdbc.domain.Author;
 
 import org.junit.jupiter.api.Test;
@@ -11,8 +13,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import tr.com.huseyinaydin.jdbc.domain.Book;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("local")
 @DataJpaTest
@@ -22,6 +26,68 @@ public class DaoIntegrationTest {
 
     @Autowired
     AuthorDao authorDao;
+
+    @Autowired
+    BookDao bookDao;
+
+    @Test
+    void testDeleteBook() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Hüseyin");
+        book.setTitle("Java Learning");
+        Book saved = bookDao.saveNewBook(book);
+
+        bookDao.deleteBookById(saved.getId());
+
+        assertThrows(EmptyResultDataAccessException.class, () -> {
+            bookDao.getById(saved.getId());
+        });
+    }
+
+    @Test
+    void updateBookTest() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Hüseyin");
+        book.setTitle("Java Learning");
+        book.setAuthorId(1L);
+        Book saved = bookDao.saveNewBook(book);
+
+        saved.setTitle("Java 21 Learning");
+        bookDao.updateBook(saved);
+
+        Book fetched = bookDao.getById(saved.getId());
+
+        assertThat(fetched.getTitle()).isEqualTo("Java 21 Learning");
+    }
+
+    @Test
+    void testSaveBook() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Hüseyin");
+        book.setTitle("Java 21 Learning");
+        book.setAuthorId(1L);
+
+        Book saved = bookDao.saveNewBook(book);
+
+        assertThat(saved).isNotNull();
+    }
+
+    @Test
+    void testGetBookByName() {
+        Book book = bookDao.findBookByTitle("Temiz Temiz Kodlar");
+
+        assertThat(book).isNotNull();
+    }
+
+    @Test
+    void testGetBook() {
+        Book book = bookDao.getById(3L);
+
+        assertThat(book.getId()).isNotNull();
+    }
 
     @Test
     void testDeleteAuthor() {
