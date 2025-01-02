@@ -1,10 +1,11 @@
 package tr.com.huseyinaydin.hdao.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+@NamedQueries({
+        @NamedQuery(name = "author_find_all", query = "FROM authors"),
+        @NamedQuery(name = "find_by_name", query = "FROM authors a WHERE a.firstName = :first_name and a.lastName = :last_name")
+})
 @Entity
 public class Author {
 

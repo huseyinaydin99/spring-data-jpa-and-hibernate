@@ -1,12 +1,13 @@
 package tr.com.huseyinaydin.hdao.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
+@NamedQueries({
+        @NamedQuery(name = "find_all_books", query = "FROM books"),
+        @NamedQuery(name = "find_by_title", query = "FROM books b where b.title = :title")
+})
 @Entity
 public class Book {
 
