@@ -32,7 +32,12 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author saveNewAuthor(Author author) {
-        return null;
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        em.persist(author);
+        em.flush(); //transaction commit edilmeden database'e yansıtır yani kalıcı hale getirir.
+        em.getTransaction().commit(); //Sultan Abdülhamit Han'ın mührüdür. Data'yı kalıcı hale getirir eğer hata olmazsa.
+        return author;
     }
 
     @Override
