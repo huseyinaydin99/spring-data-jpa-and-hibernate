@@ -21,4 +21,6 @@ public interface AuthorDao {
     List<Author> findAll();
 
     List<Author> listAuthorByLastNameLike(String lastName);
+
+    Author findAuthorByNameNative(String firstName, String lastName);
 }
