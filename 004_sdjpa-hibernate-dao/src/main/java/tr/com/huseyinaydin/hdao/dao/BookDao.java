@@ -18,4 +18,6 @@ public interface BookDao {
     void deleteBookById(Long id);
 
     List<Book> findAll();
+
+    Book findBookByTitleCriteria(String clean_code);
 }

@@ -1,5 +1,6 @@
 package tr.com.huseyinaydin.hdao.dao;
 
+import jakarta.persistence.criteria.*;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.EntityManager;
@@ -86,6 +87,31 @@ public class BookDaoImpl implements BookDao {
         em.remove(book);
         em.getTransaction().commit();
         em.close();
+    }
+
+    @Override
+    public Book findBookByTitleCriteria(String title) {
+        EntityManager em = getEntityManager();
+
+        try {
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+            CriteriaQuery<Book> criteriaQuery = criteriaBuilder.createQuery(Book.class);
+
+            Root<Book> root = criteriaQuery.from(Book.class);
+
+            ParameterExpression<String> titleParam = criteriaBuilder.parameter(String.class);
+
+            Predicate titlePredicate = criteriaBuilder.equal(root.get("title"), titleParam);
+
+            criteriaQuery.select(root).where(titlePredicate);
+
+            TypedQuery<Book> typedQuery = em.createQuery(criteriaQuery);
+            typedQuery.setParameter(titleParam, title);
+
+            return typedQuery.getSingleResult();
+        } finally {
+            em.close();;
+        }
     }
 
     @Override
