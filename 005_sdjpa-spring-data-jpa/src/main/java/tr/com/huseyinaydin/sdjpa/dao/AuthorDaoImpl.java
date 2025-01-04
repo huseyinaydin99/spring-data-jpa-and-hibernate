@@ -1,5 +1,6 @@
 package tr.com.huseyinaydin.sdjpa.dao;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import tr.com.huseyinaydin.sdjpa.domain.Author;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,8 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author findAuthorByName(String firstName, String lastName) {
-        return null;
+        return authorRepository.findAuthorByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
