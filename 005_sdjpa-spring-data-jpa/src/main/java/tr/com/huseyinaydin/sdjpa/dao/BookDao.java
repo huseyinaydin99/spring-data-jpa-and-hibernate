@@ -2,6 +2,8 @@ package tr.com.huseyinaydin.sdjpa.dao;
 
 import tr.com.huseyinaydin.sdjpa.domain.Book;
 
+import java.util.List;
+
 public interface BookDao {
 
     Book getById(Long id);
@@ -13,4 +15,6 @@ public interface BookDao {
     Book updateBook(Book book);
 
     void deleteBookById(Long id);
+
+    List<Book> findAllBooks();
 }
