@@ -1,5 +1,6 @@
 package tr.com.huseyinaydin.sdjpa.dao;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import tr.com.huseyinaydin.sdjpa.domain.Book;
 
@@ -16,6 +17,12 @@ public class BookDaoJDBCTemplate implements BookDao {
     @Override
     public List<Book> findAllBooks() {
         return jdbcTemplate.query("SELECT * FROM books", getBookMapper());
+    }
+
+    @Override
+    public List<Book> findAllBooks(Pageable pageable) {
+        return jdbcTemplate.query("SELECT * FROM books limit ? offset ?", getBookMapper(), pageable.getPageSize(),
+                pageable.getOffset());
     }
 
     @Override

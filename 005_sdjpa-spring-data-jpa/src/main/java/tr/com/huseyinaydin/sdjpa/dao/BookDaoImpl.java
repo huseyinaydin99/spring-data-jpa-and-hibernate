@@ -2,6 +2,7 @@ package tr.com.huseyinaydin.sdjpa.dao;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import tr.com.huseyinaydin.sdjpa.domain.Book;
 import tr.com.huseyinaydin.sdjpa.repositories.BookRepository;
@@ -20,6 +21,11 @@ public class BookDaoImpl implements BookDao {
     @Override
     public List<Book> findAllBooks(int pageSize, int offset) {
         return null;
+    }
+
+    @Override
+    public List<Book> findAllBooks(Pageable pageable) {
+        return List.of();
     }
 
     @Override

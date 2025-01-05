@@ -1,5 +1,6 @@
 package tr.com.huseyinaydin.sdjpa.dao;
 
+import org.springframework.data.domain.Pageable;
 import tr.com.huseyinaydin.sdjpa.domain.Book;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface BookDao {
     List<Book> findAllBooks();
 
     List<Book> findAllBooks(int pageSize, int offset);
+
+    List<Book> findAllBooks(Pageable pageable);
 }
