@@ -10,11 +10,12 @@ import org.springframework.test.context.ActiveProfiles;
 import tr.com.huseyinaydin.sdjpa.domain.Book;
 import tr.com.huseyinaydin.sdjpa.repositories.BookRepository;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("local")
 @DataJpaTest
@@ -24,6 +25,15 @@ public class BookRepositoryTest {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Test
+    void testBookFuture() throws ExecutionException, InterruptedException {
+        Future<Book> bookFuture = bookRepository.queryByTitle("Ter Temiz Kodlar Gıcır");
+
+        Book book = bookFuture.get();
+
+        assertNotNull(book);
+    }
 
     @Test
     void testBookStream() {
