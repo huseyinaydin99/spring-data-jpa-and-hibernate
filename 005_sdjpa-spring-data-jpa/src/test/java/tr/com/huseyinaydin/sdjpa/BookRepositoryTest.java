@@ -10,6 +10,9 @@ import org.springframework.test.context.ActiveProfiles;
 import tr.com.huseyinaydin.sdjpa.domain.Book;
 import tr.com.huseyinaydin.sdjpa.repositories.BookRepository;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -21,6 +24,17 @@ public class BookRepositoryTest {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Test
+    void testBookStream() {
+        AtomicInteger count = new AtomicInteger();
+
+        bookRepository.findAllByTitleNotNull().forEach(book -> {
+            count.incrementAndGet();
+        });
+
+        assertThat(count.get()).isGreaterThan(5);
+    }
 
     @Test
     void testEmptyResultException() {
