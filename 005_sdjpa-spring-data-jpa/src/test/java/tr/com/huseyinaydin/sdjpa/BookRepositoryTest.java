@@ -33,6 +33,12 @@ public class BookRepositoryTest {
     }
 
     @Test
+    void testBookJPANamedQuery() {
+        Book book = bookRepository.jpaNamed("Ter Temiz Kodlar Gıcır");
+        assertThat(book).isNotNull();
+    }
+
+    @Test
     void testBookQueryNamed() {
         Book book = bookRepository.findBookByTitleWithQueryNamed("Ter Temiz Kodlar Gıcır");
         assertThat(book).isNotNull();
