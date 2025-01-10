@@ -2,9 +2,12 @@ package tr.com.huseyinaydin.sdjpa.dao;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import tr.com.huseyinaydin.sdjpa.domain.Author;
 import org.springframework.stereotype.Component;
 import tr.com.huseyinaydin.sdjpa.repositories.AuthorRepository;
+
+import java.util.List;
 
 @Component
 public class AuthorDaoImpl implements AuthorDao {
@@ -13,6 +16,11 @@ public class AuthorDaoImpl implements AuthorDao {
 
     public AuthorDaoImpl(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
+    }
+
+    @Override
+    public List<Author> findAllAuthorsByLastName(String lastname, Pageable pageable) {
+        return authorRepository.findAuthorByLastName(lastname, pageable).getContent();
     }
 
     @Override
