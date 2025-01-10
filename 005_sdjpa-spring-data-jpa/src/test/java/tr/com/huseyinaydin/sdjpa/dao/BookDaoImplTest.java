@@ -1,38 +1,29 @@
 package tr.com.huseyinaydin.sdjpa.dao;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.context.ActiveProfiles;
 import tr.com.huseyinaydin.sdjpa.domain.Book;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("local")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ComponentScan(basePackages = {"tr.com.huseyinaydin.sdjpa.dao"})
-class BookDaoJDBCTemplateTest {
+@Import(BookDaoImpl.class)
+class BookDaoImplTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
-
     BookDao bookDao;
-
-    @BeforeEach
-    void setUp() {
-        bookDao = new BookDaoJDBCTemplate(jdbcTemplate);
-    }
 
     @Test
     void findAllBooksPage1_SortByTitle() {
@@ -97,7 +88,7 @@ class BookDaoJDBCTemplateTest {
 
         assertThat(books).isNotNull();
         assertThat(books.size()).isGreaterThan(5);
-     }
+    }
 
     @Test
     void getById() {
@@ -148,12 +139,12 @@ class BookDaoJDBCTemplateTest {
         Book book = new Book();
         book.setIsbn("1234");
         book.setPublisher("Hüseyin");
-        book.setTitle("Eski Kitap");
+        book.setTitle("Yeni Kitap");
         Book saved = bookDao.saveNewBook(book);
 
         bookDao.deleteBookById(saved.getId());
 
-        assertThrows(EmptyResultDataAccessException.class, () -> {
+        assertThrows(JpaObjectRetrievalFailureException.class, () -> {
             bookDao.getById(saved.getId());
         });
     }

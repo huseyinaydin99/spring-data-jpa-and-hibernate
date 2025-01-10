@@ -2,6 +2,7 @@ package tr.com.huseyinaydin.sdjpa.dao;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import tr.com.huseyinaydin.sdjpa.domain.Book;
@@ -24,18 +25,31 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public List<Book> findAllBooks(int pageSize, int offset) {
-        return null;
+    public List<Book> findAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable).getContent();
     }
 
+    /*
+        Bu satırda, offset değeri ile pageSize'i bölerek hangi sayfada olmamız gerektiğini hesaplıyorum.
+        offset genellikle veritabanından kaçıncı kayıttan başlayacağımızı belirtirken, pageSize her sayfada
+        kaç öğe olduğunu gösteriyor. Bu işlemi yaparak doğru sayfayı belirlemiş oluyorum.
+    */
     @Override
-    public List<Book> findAllBooks(Pageable pageable) {
-        return List.of();
+    public List<Book> findAllBooks(int pageSize, int offset) {
+        Pageable pageable = PageRequest.ofSize(pageSize);
+
+        if (offset > 0) {
+            pageable = pageable.withPage(offset / pageSize);
+        } else {
+            pageable = pageable.withPage(0);
+        }
+
+        return this.findAllBooks(pageable);
     }
 
     @Override
     public List<Book> findAllBooks() {
-        return null;
+        return bookRepository.findAll();
     }
 
     @Override
