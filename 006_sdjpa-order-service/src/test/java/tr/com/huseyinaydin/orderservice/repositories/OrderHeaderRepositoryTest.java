@@ -30,5 +30,6 @@ class OrderHeaderRepositoryTest {
 
         assertNotNull(fetchedOrder);
         assertNotNull(fetchedOrder.getId());
+        assertNotNull(fetchedOrder.getCreatedDate());
     }
 }
