@@ -2,6 +2,8 @@ package tr.com.huseyinaydin.orderservice.domain;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @AttributeOverrides({
         @AttributeOverride(
@@ -50,6 +52,9 @@ public class OrderHeader extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @OneToMany(mappedBy = "orderHeader", cascade = CascadeType.PERSIST)
+    private Set<OrderLine> orderLines;
+
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
@@ -82,6 +87,14 @@ public class OrderHeader extends BaseEntity{
         this.billToAddress = billToAddress;
     }
 
+    public Set<OrderLine> getOrderLines() {
+        return orderLines;
+    }
+
+    public void setOrderLines(Set<OrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,7 +109,8 @@ public class OrderHeader extends BaseEntity{
             return false;
         if (getBillToAddress() != null ? !getBillToAddress().equals(that.getBillToAddress()) : that.getBillToAddress() != null)
             return false;
-        return getOrderStatus() == that.getOrderStatus();
+        if (getOrderStatus() != that.getOrderStatus()) return false;
+        return getOrderLines() != null ? getOrderLines().equals(that.getOrderLines()) : that.getOrderLines() == null;
     }
 
     @Override
