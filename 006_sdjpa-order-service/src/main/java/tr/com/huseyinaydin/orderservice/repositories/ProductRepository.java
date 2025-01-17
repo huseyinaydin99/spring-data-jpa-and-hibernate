@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import tr.com.huseyinaydin.orderservice.domain.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
+    Product findByDescription(String description);
 }
