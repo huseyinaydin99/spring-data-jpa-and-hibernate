@@ -42,7 +42,8 @@ import java.util.Set;
 })
 public class OrderHeader extends BaseEntity{
 
-    private String customer;
+    @ManyToOne
+    private Customer customer;
 
     @Embedded
     private Address shippingAddress;
@@ -56,7 +57,7 @@ public class OrderHeader extends BaseEntity{
     @OneToMany(mappedBy = "orderHeader", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<OrderLine> orderLines;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
     private OrderApproval orderApproval;
 
     public OrderApproval getOrderApproval() {
@@ -84,11 +85,11 @@ public class OrderHeader extends BaseEntity{
         this.orderStatus = orderStatus;
     }
 
-    public String getCustomer() {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(String customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 

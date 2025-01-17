@@ -1,5 +1,6 @@
 package tr.com.huseyinaydin.orderservice.repositories;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import tr.com.huseyinaydin.orderservice.domain.*;
@@ -26,6 +27,9 @@ class OrderHeaderRepositoryTest {
 
     @Autowired
     OrderApprovalRepository orderApprovalRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
 
     Product product;
 
@@ -85,5 +89,36 @@ class OrderHeaderRepositoryTest {
         assertNotNull(fetchedOrder.getId());
         assertNotNull(fetchedOrder.getCreatedDate());
         assertNotNull(fetchedOrder.getLastModifiedDate());
+    }
+
+    @Test
+    void testDeleteCascade() {
+
+        OrderHeader orderHeader = new OrderHeader();
+        Customer customer = new Customer();
+        customer.setCustomerName("Yeni Müşteri");
+        orderHeader.setCustomer(customerRepository.save(customer));
+
+        OrderLine orderLine = new OrderLine();
+        orderLine.setQuantityOrdered(3);
+        orderLine.setProduct(product);
+
+        OrderApproval orderApproval = new OrderApproval();
+        orderApproval.setApprovedBy("eben");
+        orderHeader.setOrderApproval(orderApproval);
+
+        orderHeader.addOrderLine(orderLine);
+        OrderHeader savedOrder = orderHeaderRepository.saveAndFlush(orderHeader);
+
+        System.out.println("Sipariş kaydedilip transaction commit edilmeden flush ile database'e yansıtıldı.");
+
+        orderHeaderRepository.deleteById(savedOrder.getId());
+        orderHeaderRepository.flush();
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            OrderHeader fetchedOrder = orderHeaderRepository.getById(savedOrder.getId());
+
+            assertNull(fetchedOrder);
+        });
     }
 }
