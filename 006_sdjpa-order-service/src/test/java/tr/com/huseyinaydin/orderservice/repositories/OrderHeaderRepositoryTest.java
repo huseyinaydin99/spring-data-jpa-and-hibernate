@@ -44,20 +44,22 @@ class OrderHeaderRepositoryTest {
     @Test
     void testSaveOrderWithLine() {
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("Yeni Müşteri");
+        Customer customer = new Customer();
+        customer.setCustomerName("Yeni Müşteri");
+        Customer savedCustomer = customerRepository.save(customer);
+
+        orderHeader.setCustomer(savedCustomer);
 
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrdered(5);
         orderLine.setProduct(product);
 
-        /*orderHeader.setOrderLines(Set.of(orderLine));
-        orderLine.setOrderHeader(orderHeader);*/
         orderHeader.addOrderLine(orderLine);
 
-        OrderApproval orderApproval = new OrderApproval();
-        orderApproval.setApprovedBy("eben");
-        OrderApproval savedApproval = orderApprovalRepository.save(orderApproval);
-        orderHeader.setOrderApproval(savedApproval);
+        OrderApproval approval = new OrderApproval();
+        approval.setApprovedBy("eben");
+
+        orderHeader.setOrderApproval(approval);
 
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
@@ -77,7 +79,11 @@ class OrderHeaderRepositoryTest {
     @Test
     void testSaveOrder() {
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("Yeni Müşteri");
+        Customer customer = new Customer();
+        customer.setCustomerName("Yeni Müşteri");
+        Customer savedCustomer = customerRepository.save(customer);
+
+        orderHeader.setCustomer(savedCustomer);
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         assertNotNull(savedOrder);
