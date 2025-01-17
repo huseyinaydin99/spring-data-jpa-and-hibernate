@@ -1,15 +1,13 @@
 package tr.com.huseyinaydin.orderservice.repositories;
 
 import org.junit.jupiter.api.BeforeEach;
-import tr.com.huseyinaydin.orderservice.domain.OrderHeader;
+import org.junit.jupiter.api.Order;
+import tr.com.huseyinaydin.orderservice.domain.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-import tr.com.huseyinaydin.orderservice.domain.OrderLine;
-import tr.com.huseyinaydin.orderservice.domain.Product;
-import tr.com.huseyinaydin.orderservice.domain.ProductStatus;
 
 import java.util.Set;
 
@@ -25,6 +23,9 @@ class OrderHeaderRepositoryTest {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    OrderApprovalRepository orderApprovalRepository;
 
     Product product;
 
@@ -48,6 +49,11 @@ class OrderHeaderRepositoryTest {
         /*orderHeader.setOrderLines(Set.of(orderLine));
         orderLine.setOrderHeader(orderHeader);*/
         orderHeader.addOrderLine(orderLine);
+
+        OrderApproval orderApproval = new OrderApproval();
+        orderApproval.setApprovedBy("eben");
+        OrderApproval savedApproval = orderApprovalRepository.save(orderApproval);
+        orderHeader.setOrderApproval(savedApproval);
 
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
