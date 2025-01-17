@@ -1,12 +1,11 @@
 package tr.com.huseyinaydin.orderservice.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
+
 import java.util.Set;
 
 @Entity
+@Table(name = "categories")
 public class Category extends BaseEntity {
 
     private String description;
