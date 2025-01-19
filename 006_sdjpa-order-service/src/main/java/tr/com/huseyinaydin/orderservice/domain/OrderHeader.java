@@ -42,7 +42,7 @@ import java.util.Set;
 })
 public class OrderHeader extends BaseEntity{
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
     @Embedded

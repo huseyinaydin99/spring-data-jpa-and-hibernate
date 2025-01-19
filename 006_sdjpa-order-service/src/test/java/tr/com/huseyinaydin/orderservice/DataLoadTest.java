@@ -52,6 +52,13 @@ public class DataLoadTest {
         orderHeaderRepository.flush();
     }
 
+    @Test
+    void testLazyVsEager() {
+        OrderHeader orderHeader = orderHeaderRepository.getById(52l);
+        System.out.println("Sipariş Id: " + orderHeader.getId());
+        System.out.println("Müşteri Name: " + orderHeader.getCustomer().getCustomerName());
+    }
+
     private OrderHeader saveOrder(Customer customer, List<Product> products){
         Random random = new Random();
 
