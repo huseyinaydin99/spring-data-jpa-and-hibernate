@@ -13,8 +13,10 @@ import tr.com.huseyinaydin.orderservice.repositories.OrderHeaderRepository;
 import tr.com.huseyinaydin.orderservice.repositories.ProductRepository;
 
 import java.util.ArrayList;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @ActiveProfiles("local")
 @DataJpaTest
@@ -50,6 +52,17 @@ public class DataLoadTest {
         }
 
         orderHeaderRepository.flush();
+    }
+
+    @Test
+    void testN_PlusOneProblem() {
+        Customer customer = customerRepository.findCustomerByCustomerNameIgnoreCase(TEST_CUSTOMER).get();
+
+        IntSummaryStatistics totalOrdered = orderHeaderRepository.findAllByCustomer(customer).stream()
+                .flatMap(orderHeader -> orderHeader.getOrderLines().stream())
+                .collect(Collectors.summarizingInt(ol -> ol.getQuantityOrdered()));
+
+        System.out.println("toplam sipariş: " + totalOrdered.getSum());
     }
 
     @Test

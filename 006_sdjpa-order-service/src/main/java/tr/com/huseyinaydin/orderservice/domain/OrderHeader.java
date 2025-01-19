@@ -1,6 +1,8 @@
 package tr.com.huseyinaydin.orderservice.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -54,12 +56,22 @@ public class OrderHeader extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @OneToMany(mappedBy = "orderHeader", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private Set<OrderLine> orderLines = new HashSet<>();
+    @OneToMany(mappedBy = "orderHeader", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<OrderLine> orderLines;
 
-    //@OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "orderHeader")
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @Fetch(FetchMode.SELECT) //her bir ilişki için başka bir sorgu daha. Ana sorgu + ilişkili kayıtlar için ekstra sorgular. N + 1.
     private OrderApproval orderApproval;
+    /*
+    FetchMode.SELECT: İlişkili veriler için her bir ana öğe için ayrı bir sorgu çalıştırır.
+    Bu, her OrderHeader nesnesi için OrderApproval'ı almak için ekstra sorgu yapılması anlamına gelir.
+
+    FetchMode.SUBSELECT: İlişkili verilerin alınmasını daha verimli hale getirmek için,
+    ilişkili öğe için bir alt sorgu yapar. Bu, ilişkili verilerin daha optimize bir şekilde sorgulanmasını sağlar.
+    Ancak, alt sorgular bazen karmaşık hale gelebilir ve doğru şekilde çalışması için
+    ilişkilerin doğru yapılandırılması gerekir.
+     */
 
     public OrderApproval getOrderApproval() {
         return orderApproval;
