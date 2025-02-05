@@ -37,6 +37,32 @@ public class DataLoadTest {
     @Autowired
     ProductRepository productRepository;
 
+    /*
+    select * from persons where id = 1 for update;
+FOR UPDATE, SELECT sorgusuna eklenerek, sorgu tarafından döndürülen satırları kilitlemek için kullanılır.
+
+Amaç: Başka işlemlerin aynı satırları değiştirmesini engellemek.
+Çalışma Şekli: Satırları exclusive lock (özel kilit) ile kilitler, güncelleme veya silme işlemleri bitene kadar diğer işlemler bu satırlara erişemez.
+Örnek Kullanım: Transactional (ACID) sistemlerde veri bütünlüğünü korumak için sıkça kullanılır.
+Not: Sadece transaction içinde (START TRANSACTION;) çalışır!
+Kilit sorgu bitince değil, transaction tamamlanınca (COMMIT veya ROLLBACK kullanınca) kalkar.
+select sorgusu vermemizin nedeni ilgili kaydı belirtip kilitleyebilmek için gerekiyor.
+Hangi satırların kilitleneceğini belirtmek için SELECT ... FOR UPDATE kullanılır. Sorgu sonucu dönen satırlar kilitlenir ve başka işlemler tarafından güncellenemez veya silinemez.
+    */
+    @Test
+    void testDBLock() {
+        Long id = 55l;
+
+        OrderHeader orderHeader = orderHeaderRepository.findById(id).get();
+
+        Address billTo = new Address();
+        billTo.setAddress("A Mah. B Sokak. C APT. Kat 99. No 99. Evren/Merkez");
+        orderHeader.setBillToAddress(billTo);
+        orderHeaderRepository.saveAndFlush(orderHeader);
+
+        System.out.println("Sipariş güncellendi");
+    }
+
     @Disabled
     @Rollback(value = false)
     @Test
