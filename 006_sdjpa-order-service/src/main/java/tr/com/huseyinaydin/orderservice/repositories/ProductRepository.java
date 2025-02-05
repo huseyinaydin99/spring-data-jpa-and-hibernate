@@ -1,8 +1,10 @@
 package tr.com.huseyinaydin.orderservice.repositories;
 
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.QueryHints;
 import tr.com.huseyinaydin.orderservice.domain.Product;
 
 import java.util.Optional;
@@ -12,6 +14,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Override
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({
+            @QueryHint(name = "javax.persistence.lock.timeout", value = "5000") // ⏳ 5 saniye timeout ekleniyor!
+    })
     Optional<Product> findById(Long aLong);
     /*
     Pessimistic Locking (Karamsar Kilit), veriye erişen her işlem önceden kilitlenerek diğer işlemlerin aynı veriyi okumasını ya da değiştirmesini engeller, böylece çakışma riskini tamamen ortadan kaldırır.

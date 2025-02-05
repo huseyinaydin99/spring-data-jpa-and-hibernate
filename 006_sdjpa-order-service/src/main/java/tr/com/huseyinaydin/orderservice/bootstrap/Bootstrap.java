@@ -6,8 +6,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import tr.com.huseyinaydin.orderservice.domain.Customer;
 import tr.com.huseyinaydin.orderservice.domain.OrderHeader;
+import tr.com.huseyinaydin.orderservice.domain.Product;
+import tr.com.huseyinaydin.orderservice.domain.ProductStatus;
 import tr.com.huseyinaydin.orderservice.repositories.CustomerRepository;
 import tr.com.huseyinaydin.orderservice.repositories.OrderHeaderRepository;
+import tr.com.huseyinaydin.orderservice.services.ProductService;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
@@ -20,6 +23,21 @@ public class Bootstrap implements CommandLineRunner {
 
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    ProductService productService;
+
+    private void updateProduct(){
+        Product product = new Product();
+        product.setDescription("Ürün");
+        product.setProductStatus(ProductStatus.NEW);
+
+        Product savedProduct = productService.saveProduct(product);
+
+        Product savedProduct2 = productService.updateQOH(savedProduct.getId(), 25);
+
+        System.out.println("Güncellenen miktar: " + savedProduct2.getQuantityOnHand());
+    }
 
     @Override
     public void run(String... args) throws Exception {
