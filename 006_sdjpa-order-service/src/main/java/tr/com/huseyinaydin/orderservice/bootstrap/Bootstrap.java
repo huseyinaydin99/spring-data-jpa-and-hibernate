@@ -25,13 +25,38 @@ public class Bootstrap implements CommandLineRunner {
     public void run(String... args) throws Exception {
         bootstrapOrderService.readOrderData();
 
-        Customer customer = new Customer();
+        /*Customer customer = new Customer();
         customer.setCustomerName("Versiyon Testi");
         Customer savedCustomer = customerRepository.save(customer);
 
         System.out.println("Müşteri kaydı versiyonu: " + savedCustomer.getVersion());
 
-        customerRepository.deleteById(savedCustomer.getId());
+        customerRepository.deleteById(savedCustomer.getId());*/
+
+        Customer customer = new Customer();
+        customer.setCustomerName("Versiyon testi");
+        Customer savedCustomer = customerRepository.save(customer); //sorun olmaz kayıt yeni giriliyor versiyon no 1'dir.
+        System.out.println("Kaydın(satırın) versiyonu: " + savedCustomer.getVersion());
+
+        savedCustomer.setCustomerName("Versiyon testi 2");
+        Customer savedCustomer2 = customerRepository.save(savedCustomer); //yeni bir nesne üzerinden yapıldığı(güncelleme) için versiyon no 1 artar.
+        System.out.println("Version is: " + savedCustomer2.getVersion());
+
+        savedCustomer2.setCustomerName("Testing Version 3");
+        Customer savedCustomer3 = customerRepository.save(savedCustomer2); //yeni bir nesne üzerinden yapıldığı(güncelleme) için versiyon no 1 artar.
+        System.out.println("Version is: " + savedCustomer3.getVersion());
+
+        customerRepository.delete(savedCustomer3); //En son oluşturulan müşteri savedCustomer3 siliniyor.
+        //eğer savedCustomer nesnesini silmek isteseydik hata alırdık.
+        //çünkü
+        /*
+        Versiyon uyuşmazlığı:
+        Eğer versiyon numarasının güncel olmayan bir versiyonla silmeye çalışıyorsanız, yani nesne üzerinde yapılan işlem sırasında versiyon numarası değişmişse (örneğin başka bir işlem tarafından güncellenmişse), JPA bu nesnenin güncel olmadığını fark eder ve OptimisticLockException hatası verir.
+        Bu durumda, versiyon numarasındaki uyuşmazlık nedeniyle silme işlemi gerçekleşmez.
+        Veritabanındaki versiyon numarasının değişmiş olması:
+        Örneğin, savedCustomer3 nesnesi kaydedildikten sonra başka bir işlemle versiyon numarası değiştirilmiş olabilir.
+        Bu durumda, silme işlemine geçildiğinde eski versiyon numarasıyla yapılan işlem, güncel versiyonla uyuşmazlık gösterdiği için başarısız olur.
+         */
     }
 
     /*@Transactional
