@@ -4,5 +4,5 @@ create table order_line (
     order_header_id bigint,
     created_date timestamp,
     last_modified_date timestamp,
-    constraint order_header_pk FOREIGN KEY (order_header_id) references order_header(id)
+    constraint order_header_pk FOREIGN KEY (order_header_id) references order_headers(id)
 );
