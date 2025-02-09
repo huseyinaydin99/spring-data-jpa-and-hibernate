@@ -1,0 +1,8 @@
+JPA'de Inheritance (Kalıtım), nesne yönelimli programlamadaki kalıtım ilişkilerini veritabanına yansıtmak için kullanılır ve @Inheritance anotasyonu ile yönetilir. Üç temel strateji vardır: SINGLE_TABLE (tüm alt sınıflar tek tabloda tutulur, performanslıdır ancak gereksiz sütunlar olabilir), JOINED (her sınıf için ayrı tablo oluşturulur, veri tutarlılığı yüksektir ancak sorgular karmaşıktır) ve TABLE_PER_CLASS (her alt sınıfın kendi tablosu olur, esnektir ancak veri tekrarına neden olabilir). Hangi stratejinin seçileceği, performans ve veri modeline bağlıdır.
+
+JPA Kalıtımını (Inheritance) Hangisini Kullanmalı?
+JPA'de hangi kalıtım stratejisinin kullanılacağı, performans ve veri modeline bağlıdır:
+
+SINGLE_TABLE: Tüm sınıflar tek tabloda tutulur, hızlıdır ancak gereksiz sütunlar oluşabilir.
+JOINED: Her sınıf için ayrı tablo oluşturulur, veri tutarlılığı yüksektir ancak sorgular daha maliyetlidir.
+TABLE_PER_CLASS: Her alt sınıfın kendi tablosu olur, esnektir ancak veri tekrarına neden olabilir.

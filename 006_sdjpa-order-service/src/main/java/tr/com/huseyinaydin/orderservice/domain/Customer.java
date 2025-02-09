@@ -17,6 +17,11 @@ public class Customer extends BaseEntity {
     private String customerName;
 
     /*
+    Doğrulama (validation), verinin güvenilir ve tutarlı olmasını sağlamak için doğru zamanda ve doğru yerde yapılmalıdır.
+    Backend tarafında, veri tabanına kaydedilmeden önce service veya repository katmanında doğrulama yapmak, hatalı verinin sistemde yayılmasını önler.
+    Controller seviyesinde @Valid ile giriş verisini doğrulamak, gereksiz işlem yükünü azaltır ve erken hata tespiti sağlar.
+    Frontend tarafında ise, kullanıcı deneyimini iyileştirmek için anlık doğrulama (örneğin, form alanlarında anında hata gösterme) yapılmalıdır.
+    Doğrulamanın yeri ve zamanı, sistemin mimarisine ve ihtiyaçlarına göre belirlenmelidir. 🚀
     @Valid annotation'ı, bir entity üzerinde belirtilen validasyon kurallarının (örneğin, @NotNull, @Size gibi) Spring Boot tarafından otomatik olarak kontrol edilmesini sağlar ve geçersiz veri durumunda hata fırlatır.
      */
     //@Valid

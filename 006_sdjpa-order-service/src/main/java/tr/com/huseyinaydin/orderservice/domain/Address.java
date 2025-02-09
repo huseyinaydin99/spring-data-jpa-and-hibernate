@@ -1,9 +1,12 @@
 package tr.com.huseyinaydin.orderservice.domain;
 
 import jakarta.persistence.Embeddable;
+import org.hibernate.validator.constraints.Length;
 
 @Embeddable
 public class Address {
+
+    @Length(max = 30)
     private String address;
     private String city;
     private String state;

@@ -1,0 +1,174 @@
+Database Transaction - Databasr Process'de dense yeridir.
+Database Transaction (veritabanı işlemi), bir veya daha fazla SQL sorgusunun tek bir bütün olarak çalıştırılmasını sağlayan, veri bütünlüğünü ve tutarlılığını koruyan atomik bir işlemdir. Bir işlem ya tamamen başarılı olur (COMMIT) ya da hiçbir değişiklik yapmadan geri alınır (ROLLBACK), böylece sistem hatalarına, bağlantı kopmalarına veya çakışmalara karşı veri tutarlılığı sağlanır. ACID (Atomicity, Consistency, Isolation, Durability) prensiplerine dayanarak çalışan transaction mekanizması, özellikle finans, e-ticaret ve kritik veri işleme süreçlerinde güvenli ve hatasız işlemler gerçekleştirmek için vazgeçilmezdir.
+
+ACID Prensibleri
+Atomicity (Atomiklik): Bir transaction içindeki tüm işlemler ya eksiksiz gerçekleşir ya da hiçbiri uygulanmaz; böylece işlem ya tamamen başarılı olur ya da geri alınır.
+Consistency (Tutarlılık): Transaction, veritabanını baştan sona mantıksal ve kurallara uygun bir duruma getirir, veri bütünlüğünü korur.
+Isolation (İzolasyon): Aynı anda çalışan işlemler birbirini etkilemez ve her transaction, diğerlerinden bağımsız olarak çalışır.
+Durability (Kalıcılık): Bir transaction başarıyla tamamlandığında (COMMIT), yapılan değişiklikler kalıcı olur ve sistem çökse bile veri kaybolmaz.
+
+Locking - Kilitleme
+Locking (kilitleme), veritabanında eşzamanlı işlemler sırasında veri bütünlüğünü ve tutarlılığını korumak için kullanılan bir mekanizmadır. Aynı anda birden fazla işlem aynı veriye erişmek istediğinde çakışmaları önlemek için kilitleme stratejileri uygulanır. Shared Lock (Paylaşılan Kilit), verinin okunmasına izin verirken değiştirilmesini engeller, Exclusive Lock (Özel Kilit) ise hem okuma hem de yazma işlemlerini kısıtlar. Doğru kilitleme kullanımı, deadlock (ölü kilitlenme) gibi sorunları önleyerek sistem performansını dengeler ve güvenilir bir işlem yönetimi sağlar. Özellikle yüksek trafikli veritabanlarında, kilitleme stratejileri (optimistic vs. pessimistic locking) doğru uygulanmazsa performans darboğazlarına yol açabilir.
+
+Shared Lock (Paylaşılan Kilit), verinin birden fazla işlem tarafından okunmasına izin verir ancak hiçbirinin veri üzerinde değişiklik yapmasına müsaade etmez, böylece tutarlılığı korur.
+
+Exclusive Lock (Özel Kilit), veriye yalnızca tek bir işlemin erişmesine izin verir ve diğer tüm okuma ve yazma işlemlerini engelleyerek veri bütünlüğünü maksimum seviyede korur.
+
+Deadlock (Ölü Kilitlenme), iki veya daha fazla işlemin birbirlerinin kilitlediği kaynakları serbest bırakmasını bekleyerek sonsuz bir döngüye girmesi ve hiçbirinin ilerleyememesi durumudur.
+
+Optimistic Locking - İyimser Kilitlenme
+Birisi kaydı güncellediğinde, Optimistic Lock devreye girerek başka bir işlemin aynı kaydı o sürede değiştirip değiştirmediğini kontrol eder. Eğer veri değişmişse, sonradan gelen güncelleme reddedilir ve işlem hata alır. Böylece veri tutarsızlığı önlenmiş olur. Genellikle "version" (sürüm) numarası veya timestamp (zaman damgası) kullanılarak bu kontrol sağlanır.
+
+Örneğin;
+İlk işlem veriyi okudu (örneğin, version=1 olan bir kayıt).
+İkinci bir işlem aynı kaydı okudu (hala version=1).
+İlk işlem kaydı güncelledi ve version değerini 2 yaptı.
+İkinci işlem eski version=1 bilgisine göre güncelleme yapmaya çalıştı.
+Optimistic Lock fark etti ki kayıt değişmiş (version=2 olmuş) ve ikinci işlemin güncellemesini reddetti.
+Bu, geçmişte kaydın değişip değişmediğini kontrol eden bir mekanizmadır, yani başka bir işlem senin işleminden önce kaydı değiştirdiyse, senin güncellemen engellenir.
+
+Pessimistic Locking (Karamsar Kilit), veriye erişen her işlem önceden kilitlenerek diğer işlemlerin aynı veriyi okumasını ya da değiştirmesini engeller, böylece çakışma riskini tamamen ortadan kaldırır.
+
+Örnek olarak, bir bankada hesap bakiyesi güncelleme işlemi üzerinde pessimistic locking kullanıldığını düşünelim:
+
+İşlem 1: Bir kullanıcı, banka hesabındaki bakiye üzerinde işlem yapmaya başlar ve sistem bu kaydı kilitler (yani, pessimistic lock uygular).
+İşlem 2: Aynı anda başka bir kullanıcı aynı hesabı güncellemeye çalışır, ancak kilit nedeniyle işlem 1 bitene kadar beklemek zorundadır.
+İşlem 1 tamamlandığında kilit açılır ve işlem 2 kaydın kilidi çözüldüğü için kendi işlemini gerçekleştirebilir.
+Bu yöntem, çakışma olmaması için verinin sürekli olarak kilitlenmesi anlamına gelir ve yalnızca bir işlem veriye erişebilir.
+
+Commit: Bir işlem başarıyla tamamlandığında, yapılan tüm değişiklikler kalıcı hale gelir ve veritabanına kaydedilir.
+Rollback: Bir işlem sırasında bir hata meydana geldiğinde, yapılan tüm değişiklikler geri alınır ve veritabanı önceki geçerli durumuna döner.
+Savepoint: Bir işlem içinde belirli bir noktada ara kayıt noktası oluşturur, böylece işlemin sadece o noktadan sonrası geri alınabilir.
+
+PESSIMISTIC_FORCE_INCREMENT
+PESSIMISTIC_FORCE_INCREMENT kullandığında aslında şunu olur:
+
+İlk işlem kaydı kilitler ve versiyon numarasını zorla artırır. Bu işlem sırasında kaydın üzerinde fiziksel bir değişiklik yapılmaz, sadece versiyon numarası artar.
+Diğer işlemler bu kayda erişmeye çalıştığında, zaten kaydın üzerinde kilit olduğu için o anda başka bir işlem yapamazlar.
+İlk işlem tamamlandığında, commit ya da rollback yapılır ve kilit kalkar.
+Kilit kalktıktan sonra, diğer işlemler kayda erişebilir ve işlem yapabilir. Bu noktada versiyon numarasına bakılmaz çünkü kilit zaten erişimi engellemiştir.
+Sonuç olarak: Diğer işlemler versiyon numarasına bakmaz. PESSIMISTIC_LOCK kullanıldığında, kilit her şeyin önündedir. Versiyon numarasındaki artış, sadece veri üzerinde yapılan işlemleri izlemek amacıyla kullanılır, ama kilit bu noktada asıl engelleyici faktördür.
+
+OPTIMISTIC_FORCE_INCREMENT, optimistic locking yaklaşımının bir uzantısıdır ve veriyi fiziksel olarak değiştirmeden sadece versiyon numarasını artırmak için kullanılır. Bu kilit, verinin güncellenmesi sırasında diğer işlemlerle çakışma olasılığına karşı önceden güvenlik sağlar. İşlem, veriyi güncellemeden önce, kaydın versiyon numarasını artırarak çakışma olasılığını en başından engeller. Eğer başka bir işlem aynı veriye erişmeye çalışırsa, versiyon numarasındaki değişikliği fark eder ve işlem yapılamaz. Bu sayede, veri çakışmalarını minimize ederken kilitlerin eklenmesi gereksiz hale gelir. OPTIMISTIC_FORCE_INCREMENT, paralel işlemlerin güvenli bir şekilde yapılmasına olanak tanır ve sadece gerçekten gerekli olduğunda müdahale eder.
+Pessimistic Locking kullanıldığında, kilit zaten erişimi engellediği için versiyon numarasına bakmak gereksizdir.
+Optimistic Locking kullanıldığında, versiyon numarası bir çakışma kontrolü olarak kullanılır. Burada, kilit yoktur, ancak veri üzerinde başka bir işlem yapılmış mı kontrolü gereklidir.
+
+OPTIMISTIC_READ: Bu tür, kaydın okunmasına izin verir, ancak kayda yazma işlemi yapılmaz. Yani, veri üzerinde okuma yapabilir, ancak kaydın versiyon numarasını kontrol ettikten sonra, başka bir işlem kayda yazma yapmadığı sürece(bu işlem OPTIMISTIC_WRITE kullanıyorsa yazma yapabilir) herhangi bir değişiklik yapılmasına izin verilir. Bu işlem, veriyi okuma esnasında veri üzerinde değişiklik yapılmadığı garantisi verilmediği sürece güvenli bir şekilde yapılabilir.
+
+OPTIMISTIC_WRITE: Bu tür, kaydın hem okunmasına hem de yazılmasına izin verir. Yani, veri önce okunur, ardından versiyon numarası kontrol edilir. Eğer versiyon numarası değişmemişse, işlem yapılabilir. Ancak eğer başka bir işlem kayda yazma yaptıysa, versiyon numarasının değiştiğini fark ederek yazma işlemi başarısız olur. Bu tür, veri üzerinde değişiklik yapacak işlemlerde kullanılır ve veri çakışmalarını önceden engellemeye çalışır.
+Örnek Adımlar:
+Kullanıcı A:
+
+Kullanıcı A, hesap bakiyesi kaydını okur. Kaydın versiyon numarasını da alır. Diyelim ki versiyon numarası 1.
+Kullanıcı A, bakiyeyi 500 TL artırmak istiyor. Ancak, önce versiyon numarasına bakar.
+Versiyon numarasını 1 gördüğü için işlemine devam eder.
+Kullanıcı B:
+
+Aynı anda, Kullanıcı B de aynı hesap bakiyesi kaydını okur. Onun da versiyon numarası 1.
+Kullanıcı B, bakiyeyi 200 TL artırmak istiyor ve versiyon numarasına bakar.
+Versiyon numarası hala 1 olduğu için, o da işlemine devam eder.
+Kullanıcı A’nın Güncellemesi:
+
+Kullanıcı A işlemini bitirir, bakiyeyi 500 TL artırır ve veritabanına kaydeder.
+Sonrasında, versiyon numarası 2 olarak güncellenir.
+Kullanıcı B’nin Güncellemesi:
+
+Kullanıcı B, güncelleme yapmaya çalıştığında, versiyon numarasının hala 1 olduğunu görür.
+Ancak, aslında Kullanıcı A zaten kaydı değiştirdiği için versiyon numarası 2 oldu. Bu durumda, Kullanıcı B bir hata alır ve güncelleme işlemi başarısız olur.
+Kullanıcı B, önceki işlemin çakıştığını fark eder ve ya işlemi tekrar gözden geçirir ya da güncellenmiş veriyi alıp tekrar dener.
+Özet:
+OPTIMISTIC_WRITE kullandığında, veritabanı kaydına yazma işlemi yapmadan önce, kaydın versiyon numarasını kontrol ederiz. Eğer versiyon numarası değişmişse (başka biri kayda yazmışsa), işlem başarısız olur ve çakışma meydana gelir. Bu, verilerin tutarsızlık oluşturmadan paralel şekilde işlenmesini sağlar.
+
+Bu tür bir mekanizma, okuma işlemlerinin hızla yapılabilmesini sağlarken, yazma işlemlerinin çakışmalar nedeniyle doğru şekilde yönetilmesini sağlar.
+
+OPTIMISTIC_FORCE_INCREMENT ve OPTIMISTIC_WRITE arasındaki farkın özeti şu şekilde:
+
+OPTIMISTIC_FORCE_INCREMENT: Kayıt değişse de değişmese de, versiyon numarasını her durumda artırır. Yani kaydın içeriğinde bir değişiklik olup olmadığına bakmaksızın, versiyon numarasını günceller. Bu, kaydın gerçek değişikliklerini gizler ve sadece versiyon numarasının artırılmasını sağlar.
+
+OPTIMISTIC_WRITE: Yalnızca gerçek değişiklik yapıldığında versiyon numarasını artırır. Eğer bir işlem kaydını değiştirmiyorsa, versiyon numarası artmaz. Kaydın değişip değişmediği gizlenemez, çünkü versiyon numarası yalnızca değişiklik yapıldığında artar.
+
+Özetle:
+OPTIMISTIC_FORCE_INCREMENT, versiyon numarasını her durumda artırır, kaydın içeriğini gizler.
+OPTIMISTIC_WRITE, yalnızca kayıtta değişiklik yapıldığında versiyon numarasını artırır ve değişikliklerin gizlenmesi engellenir.
+
+
+
+
+
+select * from persons where id = 1 for update;
+FOR UPDATE, SELECT sorgusuna eklenerek, sorgu tarafından döndürülen satırları kilitlemek için kullanılır.
+
+Amaç: Başka işlemlerin aynı satırları değiştirmesini engellemek.
+Çalışma Şekli: Satırları exclusive lock (özel kilit) ile kilitler, güncelleme veya silme işlemleri bitene kadar diğer işlemler bu satırlara erişemez.
+Örnek Kullanım: Transactional (ACID) sistemlerde veri bütünlüğünü korumak için sıkça kullanılır.
+Not: Sadece transaction içinde (START TRANSACTION;) çalışır!
+Kilit sorgu bitince değil, transaction tamamlanınca (COMMIT veya ROLLBACK kullanınca) kalkar.
+select sorgusu vermemizin nedeni ilgili kaydı belirtip kilitleyebilmek için gerekiyor.
+Hangi satırların kilitleneceğini belirtmek için SELECT ... FOR UPDATE kullanılır. Sorgu sonucu dönen satırlar kilitlenir ve başka işlemler tarafından güncellenemez veya silinemez.
+
+
+Spring Data JPA'de Transaction
+Spring Data JPA’de Transaction (işlem yönetimi), veri tutarlılığını sağlamak için kullanılır ve ACID prensiplerine dayanır.
+@Transactional anotasyonu ile bir metot veya sınıf seviyesinde işlem başlatılır; bu süreçte tüm işlemler ya eksiksiz gerçekleştirilir ya da hata durumunda geri alınır (rollback).
+Varsayılan olarak read-only olmayan işlemler, commit edilene kadar veritabanına yazılmaz ve başarısız olursa otomatik geri alınır.
+Propagation ile işlemin başka işlemlerle nasıl birleşeceği, Isolation ile işlem seviyesinde kilitleme davranışı belirlenebilir.
+Bu sayede veri bütünlüğü korunur ve tutarsızlıklar engellenir.
+
+Propagation, bir işlemin (transaction) mevcut bir işlem içinde mi çalışacağını, yoksa yeni bir işlem başlatıp başlatmayacağını belirleyen Spring Transaction yönetimidir.
+
+Isolation, bir işlemin (transaction) diğer işlemlerden nasıl etkileneceğini belirleyen seviyedir ve kirli okuma (dirty read), tekrar eden okuma (repeatable read) ve hayalet okuma (phantom read) gibi tutarsızlıkları önlemek için kullanılır.
+
+Kirli Okuma (Dirty Read): Bir işlem, başka bir işlem tarafından henüz commit edilmemiş değişiklikleri okuyarak, rollback durumunda geçersiz verilere erişebilir.
+Tekrar Eden Okuma (Repeatable Read): Bir işlem içinde aynı sorgu birden fazla çalıştırıldığında, diğer işlemler tarafından yapılan güncellemeler nedeniyle farklı sonuçlar alınmasını engeller.
+Hayalet Okuma (Phantom Read): Bir işlem sırasında yeni satır ekleme veya silme işlemleri nedeniyle, aynı sorgunun farklı sayıda kayıt döndürmesine sebep olan tutarsızlıktır.
+
+Spring Boot'ta test aşamasında transaction yönetimi, her test metodu için veritabanında yapılan değişikliklerin test sonunda otomatik olarak geri alınmasını (rollback) sağlamak için kullanılır.
+@Transactional anotasyonu, testlerde izole bir veritabanı durumu oluşturur, böylece testler birbirini etkilemez ve gerçek veritabanı bozulmaz.
+Varsayılan olarak @DataJpaTest anotasyonu da bu davranışı içerir. Eğer değişikliklerin kalıcı olması istenirse @Commit veya @Rollback(false) kullanılabilir.
+Bu sayede testler güvenilir, tekrar edilebilir (repeatable) ve tutarlı olur.
+
+Spring Data JPA’de Implicit Transaction (Örtük İşlem), explicit olarak @Transactional anotasyonu eklenmese bile Spring’in belirli JPA metodları için otomatik olarak transaction yönetimini sağlamasıdır.
+Örneğin, save(), delete(), update() gibi değişiklik yapan CRUD işlemleri Spring tarafından kendiliğinden bir transaction içinde çalıştırılır ve işlem sonunda otomatik commit edilir.
+Ancak, sadece okuma işlemi yapan (read-only) metotlar için transaction başlatılmaz, bu nedenle tutarlılık sağlamak veya izolasyon seviyesini değiştirmek için manuel @Transactional tanımlamak gerekebilir.
+
+@Transactional, Spring'deki transaction yönetimini kontrol etmek için kullanılan bir anotasyondur.
+Bu anotasyon, bir metodu veya sınıfı kapsayarak işlem sınırlarını tanımlar; işlem, metot başarıyla tamamlandığında commit edilir, hata durumunda ise rollback yapılır.
+Bu sayede, veritabanı işlemleri tutarlı ve güvenilir şekilde yönetilir. @Transactional anotasyonu, ayrıca propagation, isolation, timeout, readOnly ve rollbackFor gibi parametrelerle daha özelleştirilebilir.
+
+propagation: Bu parametre, işlemin mevcut bir işlemle birleşip birleşmeyeceğini veya yeni bir işlem başlatıp başlatmayacağını belirler.
+isolation: İşlem seviyesinin izolasyon derecesini ayarlar, bu da işlemlerin birbirini nasıl etkileyeceğini belirler.
+timeout: İşlemin tamamlanması için verilen süreyi belirtir; süre aşılırsa işlem otomatik olarak iptal edilir.
+readOnly: Okuma işlemleri için optimize edilmesini sağlar, işlemde veri değişikliği yapılıp yapılmadığını belirtir.
+rollbackFor: Belirtilen istisnalar meydana geldiğinde, işlem otomatik olarak geri alınmasını (rollback) sağlar.
+rollbackForClassName: İstediğiniz istisnanın tam sınıf adıyla belirtildiği ve bu istisna gerçekleştiğinde işlem rollback olur.
+noRollbackFor: Belirtilen istisna türü meydana geldiğinde işlem geri alınmaz (rollback yapılmaz), işlem normal şekilde devam eder.
+noRollbackForClassName: Belirtilen istisna sınıfı ile tanımlanan bir hata oluştuğunda, işlem rollback yapılmadan devam eder.
+
+
+Transaction Manager, Spring’in veri yönetimi katmanında, işlem (transaction) yönetimini sağlayan bileşendir.
+Bir uygulamada veritabanı işlemlerinin doğru sırayla ve tutarlı bir şekilde yapılmasını sağlar.
+Spring, farklı veritabanı türlerine uygun olarak farklı Transaction Manager türleri sunar, örneğin JpaTransactionManager JPA (Java Persistence API) ile çalışan uygulamalar için kullanılırken, DataSourceTransactionManager JDBC tabanlı uygulamalarda tercih edilir.
+Transaction Manager, işlem başlangıcında bir işlem başlatır, işlem tamamlandığında commit eder veya hata durumunda rollback yaparak veritabanının tutarlılığını korur. Ayrıca, Spring'in propagation ve isolation seviyelerini belirlemesine olanak tanır, böylece her işlem doğru şekilde yönetilir.
+
+Transaction Propagation Türleri
+REQUIRED: Mevcut bir işlem varsa, ona katılır; yoksa yeni bir işlem başlatır.
+REQUIRES_NEW: Her durumda yeni bir işlem başlatır, mevcut işlem varsa onu askıya alır.
+NESTED: Mevcut işlem içinde nested (gömülü) bir işlem başlatır, başarısız olursa yalnızca gömülü işlem rollback edilir.
+MANDATORY: Mevcut bir işlem olması zorunludur, eğer işlem yoksa bir hata fırlatılır.
+SUPPORTS: Mevcut bir işlem varsa ona katılır, yoksa işlem başlatmadan devam eder.
+NOT_SUPPORTED: Mevcut bir işlem varsa onu askıya alır ve işlem başlatmaz.
+NEVER: Hiçbir durumda işlem başlatılmaz; mevcut bir işlem varsa hata fırlatılır.
+Evet, NEVER, NOT_SUPPORTED, ve MANDATORY (işlem yoksa) propagation türlerinde, eğer mevcut bir işlem yoksa, transaction başlatılmaz ve CRUD operasyonları transaction olmadan çalışır. Ancak her biri farklı şekilde çalışır:
+
+NEVER: Mevcut bir işlem varsa, hata fırlatılır; işlem başlatılmaz ve CRUD işlemleri transaction yönetimi olmadan çalışır.
+NOT_SUPPORTED: Mevcut bir işlem varsa, işlem askıya alınır ve CRUD işlemleri transaction olmadan çalışır.
+MANDATORY: Eğer mevcut bir işlem yoksa, hata fırlatılır; işlem yoksa, CRUD işlemleri transaction olmadan yapılmaz.
+Bu senaryolarda, veritabanı değişiklikleri commit veya rollback ile yönetilmediği için, veri tutarlılığı sağlanamaz ve işlemler bağımsız şekilde gerçekleşir.
+
+Isolation Seviyeleri
+READ_UNCOMMITTED: Diğer işlemler tarafından yapılan henüz commit edilmemiş değişiklikler (kirli okuma) okunabilir.
+READ_COMMITTED: Sadece commit edilmiş veriler okunabilir, ancak aynı işlem sırasında başka bir işlem veriyi değiştirebilir (tekrar eden okuma sorunları olabilir).
+REPEATABLE_READ: İlk okuma sırasında okunan veriler, işlem süresince aynı kalır; ancak, yeni satırlar eklenebilir (hayalet okuma olabilir).
+SERIALIZABLE: En yüksek izolasyon seviyesidir, işlemler sıralı şekilde yürütülür, böylece her işlem diğerlerinden tamamen bağımsız olur, ancak performans kaybı yaşanabilir.
+
+
