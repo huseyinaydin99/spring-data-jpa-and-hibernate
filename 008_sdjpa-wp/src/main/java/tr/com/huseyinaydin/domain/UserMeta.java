@@ -12,7 +12,8 @@ public class UserMeta {
     @Column(name = "umeta_id")
     private Long id;
 
-    private Long userId;
+    @ManyToOne
+    private User user;
 
     @Size(max = 255)
     @Column(columnDefinition = "longtext")
@@ -29,12 +30,12 @@ public class UserMeta {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getMetaKey() {
