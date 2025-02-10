@@ -38,7 +38,7 @@ class CreditCardRepositoryTest {
 
         CreditCard savedCC = creditCardRepository.saveAndFlush(creditCard);
 
-        System.out.println("Kredi kartı database'den okunuyor. Kredi kartı Id: " + creditCard.getCreditCardNumber());
+        System.out.println("Insert edilmiş kredi kartı database'den okunuyor. Kredi kartı numarası: " + savedCC.getCreditCardNumber());
 
         System.out.println("Kredi kartı Encrypted: " + encryptionService.encrypt(CREDIT_CARD));
 
