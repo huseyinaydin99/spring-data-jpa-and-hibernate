@@ -1,6 +1,7 @@
 package tr.com.huseyinaydin.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "wp_usermeta")
@@ -12,6 +13,9 @@ public class UserMeta {
     private Long id;
 
     private Long userId;
+
+    @Size(max = 255)
+    @Column(columnDefinition = "longtext")
     private String metaKey;
 
     @Lob
