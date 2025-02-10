@@ -1,5 +1,6 @@
 package tr.com.huseyinaydin.repositories;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import tr.com.huseyinaydin.domain.CreditCard;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import tr.com.huseyinaydin.services.EncryptionService;
+
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -23,6 +26,9 @@ class CreditCardRepositoryTest {
     @Autowired
     CreditCardRepository creditCardRepository;
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
     @Test
     void testSaveAndStoreCreditCard() {
         CreditCard creditCard = new CreditCard();
@@ -35,6 +41,14 @@ class CreditCardRepositoryTest {
         System.out.println("Kredi kartı database'den okunuyor. Kredi kartı Id: " + creditCard.getCreditCardNumber());
 
         System.out.println("Kredi kartı Encrypted: " + encryptionService.encrypt(CREDIT_CARD));
+
+        Map<String, Object> dbRow = jdbcTemplate.queryForMap("SELECT * FROM credit_card " +
+                "WHERE id = " + savedCC.getId());
+
+        String dbCardValue = (String) dbRow.get("credit_card_number");
+
+        assertThat(savedCC.getCreditCardNumber()).isNotEqualTo(dbCardValue);
+        assertThat(dbCardValue).isEqualTo(encryptionService.encrypt(CREDIT_CARD));
 
         CreditCard fetchedCC = creditCardRepository.findById(savedCC.getId()).get();
 
