@@ -36,7 +36,7 @@ public class User {
     @Column(name = "user_status")
     private Integer status;
 
-    @Column(name = "display_name")
+    @Basic(optional = false)
     private String displayName;
 
     public Long getId() {
