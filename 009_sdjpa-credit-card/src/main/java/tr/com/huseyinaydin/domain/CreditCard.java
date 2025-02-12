@@ -49,4 +49,9 @@ public class CreditCard {
     public void setExpirationDate(String expirationDate) {
         this.expirationDate = expirationDate;
     }
+
+    @PrePersist
+    public void prePersistCallback(){
+        System.out.println("JPA PrePresist(kalıcılık(INSERT) öncesi) çağrısı yapıldı.");
+    }
 }

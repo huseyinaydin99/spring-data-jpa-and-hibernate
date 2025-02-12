@@ -11,7 +11,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class ListenerRegistration implements BeanPostProcessor {
 
     private final PostLoadListener postLoadListener;
