@@ -7,14 +7,14 @@ import tr.com.huseyinaydin.interceptors.EncryptionInterceptor;
 
 import java.util.Map;
 
-@Configuration
+//@Configuration
 public class InterceptorRegistration implements HibernatePropertiesCustomizer {
 
-    @Autowired
-    EncryptionInterceptor interceptor;
+    /*@Autowired
+    EncryptionInterceptor interceptor;*/
 
     @Override
     public void customize(Map<String, Object> hibernateProperties) {
-        hibernateProperties.put("hibernate.session_factory.interceptor", interceptor);
+        //hibernateProperties.put("hibernate.session_factory.interceptor", interceptor);
     }
 }
