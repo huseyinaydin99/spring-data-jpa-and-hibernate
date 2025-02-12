@@ -11,7 +11,7 @@ public abstract class AbstractEncryptionListener {
 
     private final EncryptionService encryptionService;
 
-    public AbstractEncryptionListener(EncryptionService encryptionService) {
+    protected AbstractEncryptionListener(EncryptionService encryptionService) {
         this.encryptionService = encryptionService;
     }
 
