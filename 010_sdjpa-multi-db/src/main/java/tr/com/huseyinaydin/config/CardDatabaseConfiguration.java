@@ -1,6 +1,8 @@
 package tr.com.huseyinaydin.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import tr.com.huseyinaydin.domain.creditcard.CreditCard;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -36,5 +38,11 @@ public class CardDatabaseConfiguration {
                 .packages(CreditCard.class)
                 .persistenceUnit("card")
                 .build();
+    }
+
+    @Bean
+    public PlatformTransactionManager cardTransactionManager(
+            @Qualifier("cardEntityManagerFactory") LocalContainerEntityManagerFactoryBean cardEntityManagerFactory){
+        return new JpaTransactionManager(cardEntityManagerFactory.getObject());
     }
 }
