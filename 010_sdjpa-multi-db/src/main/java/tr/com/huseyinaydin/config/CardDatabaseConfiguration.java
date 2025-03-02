@@ -1,6 +1,7 @@
 package tr.com.huseyinaydin.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import tr.com.huseyinaydin.domain.creditcard.CreditCard;
@@ -14,6 +15,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import javax.sql.DataSource;
 
+@EnableJpaRepositories(basePackages = "tr.com.huseyinaydin.repositories.creditcard",
+        entityManagerFactoryRef = "cardEntityManagerFactory", transactionManagerRef = "cardTransactionManager")
 @Configuration
 public class CardDatabaseConfiguration {
 
