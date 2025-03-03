@@ -15,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import tr.com.huseyinaydin.domain.pan.CreditCardPAN;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @EnableJpaRepositories(basePackages = "tr.com.huseyinaydin.repositories.repositories.pan",
         entityManagerFactoryRef = "panEntityManagerFactory", transactionManagerRef = "panTransactionManager")
@@ -42,10 +43,18 @@ public class PanDatabaseConfiguration {
     public LocalContainerEntityManagerFactoryBean panEntityManagerFactory(
             @Qualifier("panDataSource") DataSource panDataSource,
             EntityManagerFactoryBuilder builder){
-        return builder.dataSource(panDataSource)
+
+        Properties props = new Properties();
+        props.put("hibernate.hbm2ddl.auto", "validate");
+
+        LocalContainerEntityManagerFactoryBean efb = builder.dataSource(panDataSource)
                 .packages(CreditCardPAN.class)
                 .persistenceUnit("pan")
                 .build();
+
+        efb.setJpaProperties(props);
+
+        return efb;
     }
 
     @Primary

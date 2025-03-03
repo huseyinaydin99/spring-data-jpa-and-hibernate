@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @EnableJpaRepositories(basePackages = "tr.com.huseyinaydin.repositories.creditcard",
         entityManagerFactoryRef = "cardEntityManagerFactory", transactionManagerRef = "cardTransactionManager")
@@ -38,10 +39,19 @@ public class CardDatabaseConfiguration {
     public LocalContainerEntityManagerFactoryBean cardEntityManagerFactory(
             @Qualifier("cardDataSource") DataSource cardDataSource,
             EntityManagerFactoryBuilder builder){
-        return builder.dataSource(cardDataSource)
-                .packages(CreditCard.class)
-                .persistenceUnit("card")
-                .build();
+
+        Properties props = new Properties();
+        props.put("hibernate.hbm2ddl.auto", "validate");
+
+        LocalContainerEntityManagerFactoryBean efb =
+                builder.dataSource(cardDataSource)
+                        .packages(CreditCard.class)
+                        .persistenceUnit("card")
+                        .build();
+
+        efb.setJpaProperties(props);
+
+        return efb;
     }
 
     @Bean
